@@ -296,7 +296,7 @@ One note before you delve into your tasks: for each endpoint you are expected to
 }
 ```
 
-- 500 INTERNAL SERVER ERROR
+### 500 INTERNAL SERVER ERROR
 
 ```json
 {
@@ -305,7 +305,7 @@ One note before you delve into your tasks: for each endpoint you are expected to
 }
 ```
 
-- 400 BAD REQUEST
+### 400 BAD REQUEST
 
 ```json
 {
@@ -314,7 +314,7 @@ One note before you delve into your tasks: for each endpoint you are expected to
 }
 ```
 
-- 405 METHOD NOT ALLOWED
+### 405 METHOD NOT ALLOWED
 
 ```json
 {
@@ -323,7 +323,7 @@ One note before you delve into your tasks: for each endpoint you are expected to
 }
 ```
 
-- 422 UNPROCESSABLE
+### 422 UNPROCESSABLE
 
 ```json
 {
