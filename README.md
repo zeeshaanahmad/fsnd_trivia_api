@@ -20,7 +20,7 @@ There are `TODO` comments throughout project. Start by reading the READMEs in:
 
 1. [`./starter/frontend/`](./starter/frontend/README.md)
 2. [`./starter/backend/`](./starter/backend/README.md)
-/starter
+
 We recommend following the instructions in those files in order. This order will look familiar from our prior work in the course.
 
 ## Starting and Submitting the Project
