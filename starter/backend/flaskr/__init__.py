@@ -1,6 +1,7 @@
 import os
 from flask import Flask, request, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from  sqlalchemy.sql.expression import func
 from flask_cors import CORS
 import random
 
@@ -37,6 +38,7 @@ def create_app(test_config=None):
     '''
     response.headers.add('Access-Control-Allow-Headers', 'Content-Type, Authorization')
     response.headers.add('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE, OPTIONS')
+    response.headers.add('Access-Control-Allow-Credentials', 'true')
     return response
 
   
@@ -91,7 +93,7 @@ def create_app(test_config=None):
       'success': True,
       'questions': current_questions,
       'total_questions': len(Question.query.all()),
-      'current_category': '',
+      'current_category': [],
       'categories': categories
     })
 
@@ -208,7 +210,7 @@ def create_app(test_config=None):
       'success': True,
       'questions': current_questions,
       'total_questions': len(Question.query.all()),
-      'current_category': current_category.format()
+      'current_category': [current_category.format()]
     })
 
  
@@ -224,36 +226,37 @@ def create_app(test_config=None):
     one question at a time is displayed, the user is allowed to answer
     and shown whether they were correct or not. 
     '''
-    try:
-      body = request.get_json()
-      previous_questions = body.get('previous_questions', None)
-      quiz_category = body.get('quiz_category', None)
+    # try:
+    body = request.get_json()
+    previous_questions = body.get('previous_questions', None)
+    quiz_category = body.get('quiz_category', None)
 
-      category_id = int(quiz_category['id'])
+    category_id = int(quiz_category['id'])
 
-      if (len(previous_questions) > 0):
-        if (category_id > 0):  # if category was selected and not the first question in quiz
-          current_question = Question.query.filter(Question.category == quiz_category['id']).filter(~Question.id.in_(previous_questions)).first()
-        else:  # if ALL was selected and not the first question in quiz
-          current_question = Question.query.filter(~Question.id.in_(previous_questions)).first()
-      else:
-        if (category_id > 0):  # if category was selected and the first question in quiz
-          current_question = Question.query.filter(Question.category == quiz_category['id']).first()
-        else:  # if ALL was selected and the first question in quiz
-          current_question = Question.query.first()
-      
-      if current_question is not None:
-        formatted_question = current_question.format()
-      else:
-        formatted_question = None
+    if (len(previous_questions) > 0):
+      if (category_id > 0):  # if category was selected and not the first question in quiz
+        current_question = Question.query.filter(Question.category == category_id)\
+              .filter(~Question.id.in_(previous_questions)).order_by(func.random()).first()
+      else:  # if ALL was selected and not the first question in quiz
+        current_question = Question.query.filter(~Question.id.in_(previous_questions)).order_by(func.random()).first()
+    else:
+      if (category_id > 0):  # if category was selected and the first question in quiz
+        current_question = Question.query.filter(Question.category == quiz_category['id']).order_by(func.random()).first()
+      else:  # if ALL was selected and the first question in quiz
+        current_question = Question.query.order_by(func.random()).first()
+    
+    if current_question is not None:
+      formatted_question = current_question.format()
+    else:
+      formatted_question = None
 
-      return jsonify({
-        'success': True,
-        'question': formatted_question
-      })
+    return jsonify({
+      'success': True,
+      'question': formatted_question
+    })
 
-    except:
-      abort(422)
+    # except:
+    #   abort(422)
 
   
   @app.errorhandler(422)
