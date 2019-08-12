@@ -35,7 +35,7 @@ class TriviaTestCase(unittest.TestCase):
     """
     def test_get_categories(self):
         res = self.client().get('/categories')
-        data = json.loads(res.data)
+        data = json.loads(res.data.decode('utf-8'))
 
         self.assertEqual(res.status_code, 200)
         self.assertTrue(data['categories'])
@@ -45,7 +45,7 @@ class TriviaTestCase(unittest.TestCase):
 
     def test_get_paginated_questions(self):
         res = self.client().get('/questions')
-        data = json.loads(res.data)
+        data = json.loads(res.data.decode('utf-8'))
 
         self.assertEqual(res.status_code, 200)
         self.assertTrue(data['categories'])
@@ -57,7 +57,7 @@ class TriviaTestCase(unittest.TestCase):
     
     def test_404_sent_requesting_beyond_valid_page(self):
         res = self.client().get('/questions?page=10000')
-        data = json.loads(res.data)
+        data = json.loads(res.data.decode('utf-8'))
 
         self.assertEqual(res.status_code, 404)
         self.assertEqual(data['success'], False)
@@ -66,7 +66,7 @@ class TriviaTestCase(unittest.TestCase):
 
     def test_get_specific_questions_by_category(self):
         res = self.client().get('/categories/1/questions')
-        data = json.loads(res.data)
+        data = json.loads(res.data.decode('utf-8'))
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['current_category']['id'], 1)
@@ -77,7 +77,7 @@ class TriviaTestCase(unittest.TestCase):
     
     def test_404_sent_requesting_questions_for_invalid_category(self):
         res = self.client().get('/categories/1000/questions')
-        data = json.loads(res.data)
+        data = json.loads(res.data.decode('utf-8'))
 
         self.assertEqual(res.status_code, 404)
         self.assertEqual(data['success'], False)
@@ -88,7 +88,7 @@ class TriviaTestCase(unittest.TestCase):
         total_questions_before_deleting = len(Question.query.all())
 
         res = self.client().delete('/questions/5')
-        data = json.loads(res.data)
+        data = json.loads(res.data.decode('utf-8'))
 
         self.assertEqual(res.status_code, 200)
         self.assertTrue(data['question'])
@@ -98,7 +98,7 @@ class TriviaTestCase(unittest.TestCase):
 
     def test_404_sent_deleting_non_existant_questions(self):
         res = self.client().delete('/questions/1000')
-        data = json.loads(res.data)
+        data = json.loads(res.data.decode('utf-8'))
 
         self.assertEqual(res.status_code, 404)
         self.assertEqual(data['success'], False)
@@ -107,7 +107,7 @@ class TriviaTestCase(unittest.TestCase):
     
     def test_405_sent_requesting_questions_via_get(self):
         res = self.client().get('/questions/1000')
-        data = json.loads(res.data)
+        data = json.loads(res.data.decode('utf-8'))
 
         self.assertEqual(res.status_code, 405)
         self.assertEqual(data['success'], False)
@@ -121,7 +121,7 @@ class TriviaTestCase(unittest.TestCase):
                                        'answer': 'answer',
                                        'difficulty': 1,
                                        'category': 1})
-        data = json.loads(res.data)
+        data = json.loads(res.data.decode('utf-8'))
 
         self.assertEqual(res.status_code, 200)
         self.assertTrue(data['questions'])
@@ -132,7 +132,7 @@ class TriviaTestCase(unittest.TestCase):
     def test_search_question(self):
         res = self.client().post('/questions', 
                                  json={'searchTerm': 'title'})
-        data = json.loads(res.data)
+        data = json.loads(res.data.decode('utf-8'))
 
         self.assertEqual(res.status_code, 200)
         self.assertTrue(data['questions'])
@@ -144,7 +144,7 @@ class TriviaTestCase(unittest.TestCase):
                                  json={'previous_questions': [20],
                                  'quiz_category': {'id': '1',
                                                    'type': 'Science'}})
-        data = json.loads(res.data)
+        data = json.loads(res.data.decode('utf-8'))
 
         self.assertEqual(res.status_code, 200)
         self.assertTrue(data['question'])
